@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_09_124909) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_13_115815) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,14 +21,17 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_09_124909) do
   end
 
   create_table "player_game_statistics", force: :cascade do |t|
+    t.float "rate", default: 0.0, null: false
     t.bigint "player_id", null: false
     t.bigint "game_id", null: false
     t.bigint "statistic_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "team_id", null: false
     t.index ["game_id"], name: "index_player_game_statistics_on_game_id"
     t.index ["player_id"], name: "index_player_game_statistics_on_player_id"
     t.index ["statistic_id"], name: "index_player_game_statistics_on_statistic_id"
+    t.index ["team_id"], name: "index_player_game_statistics_on_team_id"
   end
 
   create_table "players", force: :cascade do |t|
@@ -53,7 +56,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_09_124909) do
     t.jsonb "metrics", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["type"], name: "index_statistics_on_type", unique: true
   end
 
   create_table "team_games", force: :cascade do |t|
@@ -76,6 +78,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_09_124909) do
   add_foreign_key "player_game_statistics", "games"
   add_foreign_key "player_game_statistics", "players"
   add_foreign_key "player_game_statistics", "statistics"
+  add_foreign_key "player_game_statistics", "teams"
   add_foreign_key "players", "roles"
   add_foreign_key "players", "teams"
   add_foreign_key "team_games", "games"

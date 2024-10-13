@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 class Statistic < ApplicationRecord
-  validates :metrics, presence: true
-  validates :type, presence: true, uniqueness: true
+  validates :metrics, store_model: { merge_errors: true }
+  validates :type, presence: true
 end

@@ -73,3 +73,6 @@ group :test do
   gem 'factory_bot_rails'
   gem 'shoulda-matchers'
 end
+
+gem "skooma", "~> 0.3.2"
+gem 'pagy', '~> 9.1' # omit patch digit

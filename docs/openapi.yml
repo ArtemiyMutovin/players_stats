@@ -1,0 +1,110 @@
+openapi: 3.1.0
+info:
+  title: Player Statistics API
+  version: 1.0.0
+paths:
+  /players/top:
+    get:
+      summary: Get top players by role and team within a date range
+      description: Returns a list of top players filtered by role, team, and date range, sorted by rating. Supports pagination and caching.
+      parameters:
+        - name: role_id
+          in: query
+          description: ID of the role (e.g., forward, defender)
+          required: true
+          schema:
+            type: integer
+        - name: team_id
+          in: query
+          description: ID of the team to filter by
+          required: true
+          schema:
+            type: integer
+        - name: start_date
+          in: query
+          description: "Start date for the filter (format: YYYY-MM-DD)"
+          required: true
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2}$'  # добавляет проверку на формат даты
+        - name: end_date
+          in: query
+          description: "End date for the filter (format: YYYY-MM-DD)"
+          required: true
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2}$'  # добавляет проверку на формат даты
+        - name: limit
+          in: query
+          description: "Maximum number of players to return (default: 5)"
+          schema:
+            type: integer
+            default: 5
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: A paginated list of top players based on the filters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  players:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The unique ID of the player
+                        name:
+                          type: string
+                          description: The name of the player
+                        rating:
+                          type: number
+                          format: float
+                          description: The rating of the player
+                        role_id:
+                          type: integer
+                          description: The role ID of the player
+                  pagy:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      count:
+                        type: integer
+                        description: Total number of players
+                      page:
+                        type: integer
+                        description: Current page number
+                      items:
+                        type: integer
+                        description: Number of items per page
+                      pages:
+                        type: integer
+                        description: Total number of pages
+        '400':
+          description: Bad request (invalid or missing parameters)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid parameters"
+        '404':
+          description: No players found for the given criteria
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "No players found"
