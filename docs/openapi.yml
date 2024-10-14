@@ -1,0 +1,160 @@
+openapi: 3.1.0
+info:
+  title: Player Statistics API
+  version: 1.0.0
+paths:
+  /statistics/top_players:
+    get:
+      summary: Получить топ игроков по роли, команде и диапазону дат
+      description: Возвращает список топ игроков, отфильтрованных по роли, команде и диапазону дат, отсортированных по среднему рейтингу. Поддерживает пагинацию.
+      parameters:
+        - name: role_id
+          in: query
+          description: ID роли игрока (например, нападающий, защитник)
+          required: false
+          schema:
+            type: integer
+        - name: team_id
+          in: query
+          description: ID команды для фильтрации
+          required: false
+          schema:
+            type: integer
+        - name: start_date
+          in: query
+          description: "Начальная дата для фильтрации (формат: YYYY-MM-DD)"
+          required: false
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+        - name: end_date
+          in: query
+          description: "Конечная дата для фильтрации (формат: YYYY-MM-DD)"
+          required: false
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+        - name: limit
+          in: query
+          description: "Максимальное количество игроков для возврата (по умолчанию: 5)"
+          required: false
+          schema:
+            type: integer
+            default: 5
+        - name: page
+          in: query
+          description: Номер страницы для пагинации
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Пагинированный список топ игроков на основе фильтров
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  players:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Уникальный ID игрока
+                        name:
+                          type: string
+                          description: Имя игрока
+                        average_rating:
+                          type: number
+                          format: float
+                          description: Средний рейтинг игрока
+                        role_id:
+                          type: integer
+                          description: ID роли игрока
+                  pagination:
+                    type: object
+                    description: Метаданные пагинации
+                    properties:
+                      count:
+                        type: integer
+                        description: Общее количество игроков
+                      page:
+                        type: integer
+                        description: Текущий номер страницы
+                      items:
+                        type: integer
+                        description: Количество элементов на странице
+                      pages:
+                        type: integer
+                        description: Общее количество страниц
+        '404':
+          description: Игроки не найдены по заданным критериям
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "No players found"
+
+  /statistics:
+    post:
+      summary: Создать статистику игры игрока
+      description: Создает новую статистику игры для игрока и запускает фоновую задачу для обработки статистики.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                game_id:
+                  type: integer
+                  description: ID игры
+                player_id:
+                  type: integer
+                  description: ID игрока
+                metrics:
+                  type: object
+                  description: Метрики статистики игрока
+                  additionalProperties:
+                    type: number
+              required:
+                - game_id
+                - player_id
+                - metrics
+            example:
+              game_id: 1
+              player_id: 42
+              metrics:
+                goals: 2
+                assists: 1
+                passes: 30
+      responses:
+        '200':
+          description: Статистика успешно создана и обработка начата
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+        '400':
+          description: Некорректный запрос (неверные или отсутствующие параметры)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid parameters"
+
+servers:
+  - url: http://localhost:3000/api/v1
