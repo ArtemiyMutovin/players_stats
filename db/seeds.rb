@@ -10,7 +10,7 @@
 
 
 PlayerGameStatistic.destroy_all
-Statistic::Forward.destroy_all
+Statistic.destroy_all
 TeamGame.destroy_all
 Game.destroy_all
 Player.destroy_all
@@ -43,13 +43,13 @@ TeamGame.create!( importance: 0.5, home: false, team: team_2, game: game_2)
 
 
 
-statistic_1 = Statistic::Forward.create!(metrics: { goals: 2, assists: 1, shots: 6 })
-statistic_2 = Statistic::Forward.create!(metrics: { goals: 0, assists: 0, shots: 2 })
-statistic_3 = Statistic::Goalkeeper.create!(metrics: { saves: 6, penalties_saved: 0, catches: 10 })
-statistic_4 = Statistic::Defender.create!(metrics: { tackles: 5, blocked_shots: 2, interceptions: 8 })
-statistic_5 = Statistic::Goalkeeper.create!(metrics: { saves: 8, penalties_saved: 0, catches: 12 })
-statistic_6 = Statistic::Midfielder.create!(metrics: { freekicks: 2, crosses: 3, passes: 9 })
-statistic_7 = Statistic::Forward.create!(metrics: { goals: 1, assists: 0, shots: 4 })
+statistic_1 = Statistics::Forward.create!(metrics: { goals: 2, assists: 1, shots: 6 })
+statistic_2 = Statistics::Forward.create!(metrics: { goals: 0, assists: 0, shots: 2 })
+statistic_3 = Statistics::Goalkeeper.create!(metrics: { saves: 6, penalties_saved: 0, catches: 10 })
+statistic_4 = Statistics::Defender.create!(metrics: { tackles: 5, blocked_shots: 2, interceptions: 8 })
+statistic_5 = Statistics::Goalkeeper.create!(metrics: { saves: 8, penalties_saved: 0, catches: 12 })
+statistic_6 = Statistics::Midfielder.create!(metrics: { freekicks: 2, crosses: 3, passes: 9 })
+statistic_7 = Statistics::Forward.create!(metrics: { goals: 1, assists: 0, shots: 4 })
 
 
 
